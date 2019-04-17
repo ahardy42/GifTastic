@@ -5,17 +5,17 @@
     <title>Giftastic! | Andy Hardy</title>
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat|Roboto:400,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Dokdo" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
 <header>
-    <h1>Gifs for Days...</h1>
+    <h1>GIFs for Days...</h1>
 </header>
 <div class="wrapper">
-    <div class="container">
+    <div class="gif-container">
         <!-- This is where the GIFs and buttons go -->
         <div class="button-land">
 
@@ -24,15 +24,18 @@
 
         </div>
     </div>
-    <div class="search">
-        <form>
-            Search GIPHY<br>
-            <input type="text" value="Search" id="search-field"><br>
-            <button type="button" id="search-button">Search</button>
-        </form>
-    </div>
-    <div class="favorites">
-        <h3>My Favorites</h3>
+    <div class="search-container">
+        <div class="search">
+            <form>
+                Search GIPHY<br>
+                <input type="text" value="Search" id="search-field"><br>
+                <button type="button" id="search-button">Search</button>
+            </form>
+        </div>
+        <div class="favorites">
+            <h3>My Favorites</h3>
+            <div id="favorite-box"></div>
+        </div>
     </div>
 </div>
 
