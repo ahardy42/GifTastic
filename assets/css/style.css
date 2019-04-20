@@ -68,12 +68,18 @@ h1 {
     border: 5px solid black;
 }
 
+.gif-divider {
+    width: 90%;
+    margin: auto;
+    border: 2px solid black;
+}
+
 .search-container {
     width: 40%;
     display: flex;
     flex-direction: column;
     margin: 1em;
-    background-color: gray;
+    background-color: rgba(112, 106, 106, 0.8);
     padding: 1em;
     border-radius: 0.25em;
 }

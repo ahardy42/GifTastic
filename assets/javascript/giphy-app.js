@@ -3,7 +3,6 @@ $(document).ready(function () {
 
     // initial buttons array
     var buttonsArray = ["Blues Brothers", "Star Wars", "28 Days Later", "Zombie Land", "Alice in Wonderland", "Goonies"];
-
     // ------------------------------- page building code goes here -------------------------------
     function newButton(value) {
         // create a button using jQuery
@@ -14,6 +13,17 @@ $(document).ready(function () {
 
         // grab the div these go in and start adding them to the page
         $(".button-land").append(button);
+    }
+
+    // makes the button to load more GIFs 
+    function moreGifsButton(value, offset) {
+        var button = $("<button>");
+        button.attr({ "data-offset": offset, "data-value": value });
+        button.addClass("more-gifs");
+        button.text("Display 10 More GIFs");
+        var lastDiv = $(".gif-div").last();
+        lastDiv.after(button);
+        lastDiv.after("<div class='gif-divider'>");
     }
 
     function makeGifDiv(data, index) {
@@ -39,8 +49,8 @@ $(document).ready(function () {
         })
         gifDiv.addClass("gif-div");
         gifDiv.append(gifImg, ratingP);
-        // prepend the div with rating and image to the page at the div w/ class gif-tag
-        $(".gif-land").prepend(gifDiv);
+        // append the div with rating and image to the page at the div w/ class gif-tag
+        $(".gif-land").append(gifDiv);
     }
 
     // ------------------------------ Objects Constructor and Global functions --------------------
@@ -72,8 +82,11 @@ $(document).ready(function () {
         // first, prevent the default behavior of a button!
         event.preventDefault();
 
-         // empty the gif-land div
-         $(".gif-land").empty();
+        // empty the gif-land div
+        $(".gif-land").empty();
+
+        // reset offset for the more gifs button
+        var offset = 10;
 
         // save the value of the form to a variable, as long as the value is a string of some kind and then make a new button
         var value = $("#search-field").val();
@@ -83,7 +96,7 @@ $(document).ready(function () {
             $("#search-field").val("");
         }
 
-        // search the GIPHY api for the value
+        // search the GIPHY api for the value and get 10 results
         var apiKey = "7yoI0Q9V3e6BZA3icwdVrvDDVdqqaLqt";
         var queryUrl = "https://api.giphy.com/v1/gifs/search?api_key=" + apiKey + "&q=" + value + "&limit=10&offset=0&rating=R&lang=en";
         // grab some info from the giphy API
@@ -91,17 +104,21 @@ $(document).ready(function () {
             url: queryUrl,
             method: "GET"
         }).then(function (response) {
-            console.log(response);
-            response.data.forEach(function (data) {
+            response.data.forEach(function (data, index) {
                 // make the image div for each data value
-                makeGifDiv(data);
+                makeGifDiv(data, index);
             });
+            // make the more gifs button and add it to the page
+            moreGifsButton(value, offset);
         });
     });
+
     // onclick function for the buttons
     $("body").on("click", ".gif-search", function () {
         // empty the gif-land div
         $(".gif-land").empty();
+        // reset offset for the more gifs button
+        var offset = 10;
         // save the value of the form to a variable, as long as the value is a string of some kind and then make a new button
         var value = $(this).attr("data-name");
 
@@ -118,7 +135,10 @@ $(document).ready(function () {
                 // make the image div for each data value
                 makeGifDiv(data, index);
             });
+            // make the more gifs button and add it to the page
+            moreGifsButton(value, offset);
         });
+
     });
 
     // onclick function to animate the GIFs on the page
@@ -134,20 +154,43 @@ $(document).ready(function () {
         }
     });
 
+    // onclick function for the show ten more gifs button 
+    $("body").on("click", ".more-gifs", function () {
+        // search the "data-value" value and append 10 new resulting GIFs using a search offset. 
+        var offset = $(this).attr("data-offset");
+        var value = $(this).attr("data-value");
+        // removes the button prior to loading the new GIFs before re-creating the button below all the GIFs
+        $(".more-gifs").remove();
+        // search the GIPHY api for the value
+        var apiKey = "7yoI0Q9V3e6BZA3icwdVrvDDVdqqaLqt";
+        var queryUrl = "https://api.giphy.com/v1/gifs/search?api_key=" + apiKey + "&q=" + value + "&limit=10&offset=" + offset + "&rating=R&lang=en";
+        // grab some info from the giphy API
+        $.ajax({
+            url: queryUrl,
+            method: "GET"
+        }).then(function (response) {
+            response.data.forEach(function (data, index) {
+                // make the image div for each data value
+                makeGifDiv(data, index);
+            });
+            // re-creating the button below the GIFs and assigning a new offset value
+            moreGifsButton(value, offset);
+        });
+        // set offset to a new value so GIFs won't be repeated.
+        offset = parseInt(offset) + 10;
+        $(this).attr("data-offset", offset);
+    });
+
     // drag and drop event handler functions for grabbing favorites and putting them in the favorites section.
-    $("#favorite-box").on("dragover", function() {
-        console.log("dragover");
+    $("#favorite-box").on("dragover", function () {
         allowDrop(event);
     });
 
-    $("#favorite-box").on("drop", function() {
-        console.log("drop");
+    $("#favorite-box").on("drop", function () {
         drop(event);
     });
 
-    $("body").on("dragstart", ".gif-div", function() {
-        console.log("dragstart");
-        console.log(event);
+    $("body").on("dragstart", ".gif-div", function () {
         drag(event);
     })
 
