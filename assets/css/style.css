@@ -29,6 +29,24 @@ h1 {
     display: flex;
 }
 
+button {
+    color: #1A0E0E;
+    background-color: #34D1BF;
+    border: none;
+    min-width: 15%;
+    padding: 1em;
+    margin: 0.5em;
+    border-radius: 0.25em;
+    border-bottom-right-radius: 2em;
+}
+
+.button-land {
+    display: flex;
+    margin: 1em auto;
+    align-content: space-around;
+    flex-wrap: wrap;
+}
+
 .gif-container {
     width: 60%;
     display: flex;
@@ -50,28 +68,21 @@ h1 {
     display: inline-block;
     text-align: center;
     margin: 1em auto;
-    position: relative;
+    height: min-content;
 }
 
 .gif-rating {
-    position: absolute;
-    top: 10%;
-    right: 10%;
     background-color: rgba(157, 152, 152, 0.6);
-}
-
-.gif-rating:hover, .gif-rating:focus {
-    margin-right: -0.5em;
-    margin-top: -0.5em;
-    padding: 0.5em;
-    border-radius: 1.5em;
-    border: 5px solid black;
 }
 
 .gif-divider {
     width: 90%;
     margin: auto;
     border: 2px solid black;
+}
+
+.more-gifs {
+    margin: 1em auto;
 }
 
 .search-container {
@@ -85,6 +96,47 @@ h1 {
 }
 
 #favorite-box {
+    display: flex;
+    flex-wrap: wrap;
     min-height: 400px;
+    height: max-content;
     border: 2px solid black;
+}
+
+#favorite-box > div:last-child {
+    margin-bottom: 5em;
+}
+
+.hidden-button {
+    display: none;
+}
+/* media queries go here */
+@media only screen and (max-width: 830px) {
+
+    .wrapper {
+        flex-direction: column-reverse;
+    }
+
+    .search-container {
+        width: 90%;
+        margin: 1em auto;
+    }
+
+    .gif-container {
+        width: 90%;
+        margin: 1em auto;
+    }
+
+    #favorite-box {
+        min-height: 200px;
+    }
+
+    .hidden-button {
+        display: block;
+        margin: 1em auto;
+    }
+
+    .drag-here {
+        display: none;
+    }
 }

@@ -3,6 +3,7 @@ $(document).ready(function () {
 
     // initial buttons array
     var buttonsArray = ["Blues Brothers", "Star Wars", "28 Days Later", "Zombie Land", "Alice in Wonderland", "Goonies"];
+    var wrapCounter = 0;
     // ------------------------------- page building code goes here -------------------------------
     function newButton(value) {
         // create a button using jQuery
@@ -21,34 +22,43 @@ $(document).ready(function () {
         button.attr({ "data-offset": offset, "data-value": value });
         button.addClass("more-gifs");
         button.text("Display 10 More GIFs");
-        var lastDiv = $(".gif-div").last();
-        lastDiv.after(button);
-        lastDiv.after("<div class='gif-divider'>");
+        var lastDiv = $(".gif-land").last();
+        lastDiv.append("<div class='gif-divider'>");
+        lastDiv.append(button);
     }
 
     function makeGifDiv(data, index) {
         // make the image tag for each data value
         var gifImg = $("<img>");
         gifImg.attr({
-            src: data.images.fixed_height_still.url,
-            "data-animate": data.images.fixed_height.url,
-            "data-still": data.images.fixed_height_still.url,
+            src: data.images.fixed_width_still.url,
+            "data-animate": data.images.fixed_width.url,
+            "data-still": data.images.fixed_width_still.url,
             "data-state": "still",
             "class": "gif-img",
-            "id": "img-number-" + index
+            "id": "img-" + data.id,
+            "data-width": data.images.fixed_width_still.width,
+            "data-height": data.images.fixed_width_still.height,
+            "data-rating": data.rating.toUpperCase()
         });
         // make the <p> element to put the rating info in
         var ratingP = $("<p>");
         ratingP.addClass("gif-rating");
+        ratingP.attr("id", "p-" + data.id);
         ratingP.text(data.rating.toUpperCase());
+        // make a button that will work for devices that don't easily support dragging
+        var button = $("<button>");
+        button.addClass("hidden-button");
+        button.attr("data-id", data.id);
+        button.text("Add to Favorites");
         // make a <div> to wrap the img and p in
         var gifDiv = $("<div>");
         gifDiv.attr({
-            "id": "gif-number-" + index,
+            "id": "gif-" + data.id,
             "draggable": "true"
         })
         gifDiv.addClass("gif-div");
-        gifDiv.append(gifImg, ratingP);
+        gifDiv.append(gifImg, ratingP, button);
         // append the div with rating and image to the page at the div w/ class gif-tag
         $(".gif-land").append(gifDiv);
     }
@@ -70,10 +80,22 @@ $(document).ready(function () {
     }
 
     function drop(ev) {
+        // this allows the drop to happen, and then appends the dropped image in the favorites area
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
-        console.log(data);
         ev.target.appendChild(document.getElementById(data));
+        // this re-creates the gif-div and gif-rating and then puts them in the right place
+        var div = $("<div>");
+        div.addClass("gif-div");
+        var p = $("<p>");
+        p.addClass("gif-rating");
+        p.addClass("wrap-it-" + wrapCounter);
+        var image = $("#"+data);
+        image.addClass("wrap-it-" + wrapCounter);
+        p.text(image.attr("data-rating"));
+        image.after(p);
+        $(".wrap-it-" + wrapCounter).wrapAll(div);
+        wrapCounter++;
     }
 
     // ----------------------------- Event Handlers go here --------------------------------------
@@ -184,15 +206,29 @@ $(document).ready(function () {
     // drag and drop event handler functions for grabbing favorites and putting them in the favorites section.
     $("#favorite-box").on("dragover", function () {
         allowDrop(event);
+        $(".temp-outline").remove();
     });
 
     $("#favorite-box").on("drop", function () {
         drop(event);
     });
 
-    $("body").on("dragstart", ".gif-div", function () {
+    $("body").on("dragstart", ".gif-img", function () {
         drag(event);
-    })
+        $(this).siblings("p").remove();
+    });
+
+    $("body").on("click", ".hidden-button", function() {
+        // grab the id of the data-id attribute, which matches the id of the div
+        var id = $(this).attr("data-id");
+        console.log(id);
+        var div = $("#gif-" + id);
+        console.log(div);
+        // move the div to the favorite box
+        $("#favorite-box").append(div);
+        // remove the button
+        $(this).remove();
+    });
 
 
 
